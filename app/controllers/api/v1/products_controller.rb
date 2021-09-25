@@ -6,10 +6,10 @@ class Api::V1::ProductsController < ApplicationController
 
   def show
     product=Product.find_by(id: params[:id])
-    if product 
+    if product
       render json: product, status: 200
     else
-      render json: {error: "Product not Found"} 
+      render json: {error: "Product not Found"}
     end
   end
 
@@ -20,14 +20,32 @@ class Api::V1::ProductsController < ApplicationController
       price: prod_params[:price],
       description: prod_params[:description]
     )
-    if product.save 
-      render json: product, status: 200
+    if product.save
+      render json: product, status: 201
     else
-      render json: {error: "Error creating review"}
+      render json: {error: "Error creating object"}
     end
   end
 
-  private 
+  def destroy
+    product=Product.find_by(id: params[:id])
+    if product.destroy
+      render json: product, status: 204
+    else
+      render json: {error: "Error deleting object"}
+    end
+  end
+
+  def update
+    product=Product.find_by(id: params[:id])
+    if product.update(prod_params)
+      render json: product, status: 201
+    else
+      render json: {error: "Error actualizando objecto"}
+    end
+  end
+
+  private
     def prod_params
       params.require(:product).permit(
         [
